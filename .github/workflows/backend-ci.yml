@@ -7,8 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  product-service:
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: product-service
 
     steps:
       - uses: actions/checkout@v4
@@ -19,5 +23,24 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Compile with Maven
-        run: ./mvnw clean package -DskipTests
+      - name: Build product-service
+        run: chmod +x ./mvnw && ./mvnw clean package -DskipTests
+
+  movement-service:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: movement-service
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build movement-service
+        run: chmod +x ./mvnw && ./mvnw clean package -DskipTests
