@@ -1,6 +1,5 @@
 package com.inventario.inventory_backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,8 +28,7 @@ public class Movimiento {
     @Builder.Default
     private LocalDateTime fecha = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "producto_id", nullable = false)
-    @JsonIgnore
     private Producto producto;
 }

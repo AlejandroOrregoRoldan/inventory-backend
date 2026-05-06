@@ -19,6 +19,8 @@ public class ProductoController {
 
     private final InventarioService inventarioService;
 
+    // ── Productos ──────────────────────────────────────────────
+
     @GetMapping("/productos")
     public ResponseEntity<List<Producto>> listarProductos() {
         return ResponseEntity.ok(inventarioService.listarProductos());
@@ -28,6 +30,25 @@ public class ProductoController {
     public ResponseEntity<Producto> registrarProducto(@Valid @RequestBody Producto producto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(inventarioService.registrarProducto(producto));
+    }
+
+    @PutMapping("/productos/{id}")
+    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id,
+                                                       @Valid @RequestBody Producto datos) {
+        return ResponseEntity.ok(inventarioService.actualizarProducto(id, datos));
+    }
+
+    @DeleteMapping("/productos/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        inventarioService.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ── Movimientos ────────────────────────────────────────────
+
+    @GetMapping("/movimientos")
+    public ResponseEntity<List<Movimiento>> listarMovimientos() {
+        return ResponseEntity.ok(inventarioService.listarMovimientos());
     }
 
     @PostMapping("/movimientos")

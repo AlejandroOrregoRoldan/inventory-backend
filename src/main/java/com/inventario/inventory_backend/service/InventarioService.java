@@ -18,6 +18,8 @@ public class InventarioService {
     private final ProductoRepository productoRepository;
     private final MovimientoRepository movimientoRepository;
 
+    // ── Productos ──────────────────────────────────────────────
+
     public List<Producto> listarProductos() {
         return productoRepository.findAll();
     }
@@ -27,6 +29,29 @@ public class InventarioService {
             producto.setStock(0);
         }
         return productoRepository.save(producto);
+    }
+
+    public Producto actualizarProducto(Long id, Producto datos) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con ID: " + id));
+        producto.setNombre(datos.getNombre());
+        producto.setDescripcion(datos.getDescripcion());
+        producto.setPrecio(datos.getPrecio());
+        producto.setStock(datos.getStock());
+        return productoRepository.save(producto);
+    }
+
+    public void eliminarProducto(Long id) {
+        if (!productoRepository.existsById(id)) {
+            throw new IllegalArgumentException("Producto no encontrado con ID: " + id);
+        }
+        productoRepository.deleteById(id);
+    }
+
+    // ── Movimientos ────────────────────────────────────────────
+
+    public List<Movimiento> listarMovimientos() {
+        return movimientoRepository.findAll();
     }
 
     @Transactional
