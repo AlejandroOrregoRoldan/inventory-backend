@@ -33,4 +33,7 @@ public class Movimiento {
 
     @Column(nullable = false)
     private String productoNombre;
+
+    @Column(nullable = false)
+    private String usuario;
 }

@@ -22,13 +22,15 @@ public class MovimientoService {
 
     @Transactional
     public Movimiento registrarMovimiento(TipoMovimiento tipo, Integer cantidad,
-                                          Long productoId, String productoNombre) {
+                                          Long productoId, String productoNombre,
+                                          String usuario) {
         Movimiento movimiento = Movimiento.builder()
                 .tipo(tipo)
                 .cantidad(cantidad)
                 .fecha(LocalDateTime.now())
                 .productoId(productoId)
                 .productoNombre(productoNombre)
+                .usuario(usuario)
                 .build();
         return movimientoRepository.save(movimiento);
     }

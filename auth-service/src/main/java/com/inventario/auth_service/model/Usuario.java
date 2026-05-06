@@ -20,4 +20,9 @@ public class Usuario {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Rol rol = Rol.USER;
 }

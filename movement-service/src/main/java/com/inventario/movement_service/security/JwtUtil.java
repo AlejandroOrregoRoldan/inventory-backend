@@ -1,4 +1,4 @@
-package com.inventario.auth_service.security;
+package com.inventario.movement_service.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -7,31 +7,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 
 @Component
 public class JwtUtil {
 
     private final SecretKey key;
-    private final long expiration;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration}") long expiration) {
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(java.util.Base64.getDecoder().decode(secret));
-        this.expiration = expiration;
-    }
-
-    public String generateToken(String username, String rol) {
-        Date now = new Date();
-        Date exp = new Date(now.getTime() + expiration);
-
-        return Jwts.builder()
-                .subject(username)
-                .claim("rol", rol)
-                .issuedAt(now)
-                .expiration(exp)
-                .signWith(key)
-                .compact();
     }
 
     public Claims extractAllClaims(String token) {
@@ -40,14 +23,6 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-    }
-
-    public String extractUsername(String token) {
-        return extractAllClaims(token).getSubject();
-    }
-
-    public String extractRol(String token) {
-        return extractAllClaims(token).get("rol", String.class);
     }
 
     public boolean isTokenValid(String token) {

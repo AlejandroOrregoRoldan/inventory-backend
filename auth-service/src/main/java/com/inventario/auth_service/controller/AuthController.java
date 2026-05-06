@@ -2,6 +2,7 @@ package com.inventario.auth_service.controller;
 
 import com.inventario.auth_service.controller.dto.LoginRequest;
 import com.inventario.auth_service.controller.dto.RegisterRequest;
+import com.inventario.auth_service.model.Rol;
 import com.inventario.auth_service.model.Usuario;
 import com.inventario.auth_service.repository.UsuarioRepository;
 import com.inventario.auth_service.security.JwtUtil;
@@ -30,14 +31,25 @@ public class AuthController {
                     .body(Map.of("error", "El usuario ya existe"));
         }
 
+        Rol rol = Rol.USER;
+        if (request.rol() != null) {
+            try {
+                rol = Rol.valueOf(request.rol().toUpperCase());
+            } catch (IllegalArgumentException ignored) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Rol inválido. Use ADMIN o USER."));
+            }
+        }
+
         Usuario usuario = Usuario.builder()
                 .username(request.username())
                 .password(passwordEncoder.encode(request.password()))
+                .rol(rol)
                 .build();
         usuarioRepository.save(usuario);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("message", "Usuario registrado correctamente"));
+                .body(Map.of("message", "Usuario registrado correctamente", "rol", rol.name()));
     }
 
     @PostMapping("/login")
@@ -51,8 +63,11 @@ public class AuthController {
                     .body(Map.of("error", "Credenciales inválidas"));
         }
 
-        String token = jwtUtil.generateToken(usuario.getUsername());
+        String token = jwtUtil.generateToken(usuario.getUsername(), usuario.getRol().name());
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "rol", usuario.getRol().name()
+        ));
     }
 }
